@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_cors import CORS
 from Web.database import get_mysql_connection
-from Web.util import send_verification_email
+from Web.util import send_verification_email, can_send
 
 app = Flask(__name__, static_folder='E:\\learnProject\\End-to-end-encrypted-chat-web-application\\Web\\static')
 CORS(app)
@@ -17,9 +17,12 @@ def register():
     email = request.form['registerEmail']
     if email in global_dict:
         return render_template('login.html')
-    code = send_verification_email(email)
-    global_dict[email] = code
-    return render_template('registerCode.html')
+    flag = can_send()
+    if flag:
+        code = send_verification_email(email)
+        global_dict[email] = code
+        return render_template('registerCode.html')
+    return render_template('login.html')
 
 
 @app.route('/registerCode', methods=['POST'])
@@ -53,14 +56,18 @@ def code():
     if global_dict[email] == code:
         print("test-----------")
         return render_template('chat.html')
+    return render_template('login.html')
 
 
 @app.route('/email', methods=['POST'])
 def email():
-    email = request.form['email']
-    code = send_verification_email(email)
-    global_dict[email] = code
-    return render_template('code.html')
+    flag = can_send()
+    if flag:
+        email = request.form['email']
+        code = send_verification_email(email)
+        global_dict[email] = code
+        return render_template('code.html')
+    return render_template('email.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])

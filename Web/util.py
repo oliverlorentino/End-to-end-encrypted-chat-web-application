@@ -5,6 +5,22 @@ import time
 
 from email.message import EmailMessage
 
+flag = True
+last_time = time.time()
+
+
+def can_send():
+    global flag
+    global last_time
+    if flag:
+        flag = False
+        last_time = time.time()
+        return True
+    if time.time() - last_time > 60:
+        last_time = time.time()
+        return True
+    return False
+
 
 def generate_verification_code(length):
     # 生成指定长度的随机验证码
@@ -37,4 +53,3 @@ def send_verification_email(receive_mail):
         smtp.send_message(msg)
 
     return verification_code
-
