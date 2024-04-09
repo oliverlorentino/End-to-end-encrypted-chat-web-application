@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+  <title></title>
+</head>
+
+<body>
+  <div class="content">
+    <div class="form sign-in">
+      <h2>验证邮箱</h2>
+      <form action="/email" method="post">
+      <label>
+        <span>邮箱</span>
+        <input type="email" id="email" name="email" autocomplete="email"> <!-- 添加id属性 -->
+      </label>
+      <button type="submit" class="submit" id="login-button">发送验证码</button> <!-- 添加id属性 -->
+        </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../static/js/script.js"></script>
+</body>
+
+</html>
