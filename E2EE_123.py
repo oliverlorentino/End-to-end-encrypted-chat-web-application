@@ -130,7 +130,6 @@ def handle_encrypt_message():
     #调用加密函数，传递相关参数
     ciphertext, mac_tag = encrypt_message(message, key_encryption, key_mac, associated_data, iv)
 
-    # Generate a unique message ID and store the encryption parameters
     message_id = base64.urlsafe_b64encode(os.urandom(16)).decode('utf-8')
     store[message_id] = {
         'key_encryption': key_encryption.hex(),
