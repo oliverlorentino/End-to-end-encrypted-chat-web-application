@@ -3,14 +3,24 @@ import smtplib
 import ssl
 import time
 from email.message import EmailMessage
-
+import hashlib
 from PIL import Image, ImageDraw, ImageFont
-from flask import Flask
 
 flag = True
 last_time = time.time()
 
-app = Flask(__name__)
+
+def sha256_encrypt(text):
+    # 创建SHA256哈希对象
+    sha256_hash = hashlib.sha256()
+
+    # 更新哈希对象的内容
+    sha256_hash.update(text.encode('utf-8'))
+
+    # 获取加密结果
+    encrypted_text = sha256_hash.hexdigest()
+
+    return encrypted_text
 
 
 def can_send():
@@ -90,3 +100,5 @@ def gen_captcha_image():
     image.save('../Web/static/captcha.jpg', 'jpeg')
 
     return captcha_text
+
+

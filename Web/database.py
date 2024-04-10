@@ -7,5 +7,3 @@ def get_mysql_connection():
                                   host='59.110.162.232', database='chatdb',
                                   port='3306')
     return cnx
-
-

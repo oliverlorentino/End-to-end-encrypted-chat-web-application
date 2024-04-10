@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_cors import CORS
 from Web.database import get_mysql_connection
-from Web.util import send_verification_email, can_send, gen_captcha_image
+from Web.util import send_verification_email, can_send, gen_captcha_image, sha256_encrypt
 
 app = Flask(__name__, static_folder='./static')
 CORS(app)
@@ -42,6 +42,7 @@ def user_info():
     password = request.form['password']
     connection = get_mysql_connection()
     cursor = connection.cursor()
+    password = sha256_encrypt(password)
     save_sql = "INSERT INTO users (username, password, created_at) VALUES (%s, %s,%s);"
     cursor.execute(save_sql, (user_name, password, datetime.now()))
     connection.commit()
@@ -77,11 +78,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         captcha = request.form['captcha']
         if captcha != picture_code:
             return render_template('login.html')
         connection = get_mysql_connection()
         cursor = connection.cursor()
+
+        password = sha256_encrypt(password)
 
         query = 'SELECT * FROM users WHERE username = %s AND password = %s'
         params = (username, password)
