@@ -36,8 +36,8 @@ def generate_verification_code(length):
 def send_verification_email(receive_mail):
     # 生成验证码
     verification_code = generate_verification_code(6)
-    EMAIL_ADDRESS = '2171649454@qq.com'  # 换成你的邮箱地址
-    EMAIL_PASSWORD = 'ydmhlwplxsqkdjje'
+    EMAIL_ADDRESS = '2968632149@qq.com'  # 换成你的邮箱地址
+    EMAIL_PASSWORD = 'fhdqpzwpgenjdgid'
     smtp = smtplib.SMTP('smtp.qq.com', 25)
     context = ssl.create_default_context()
     sender = EMAIL_ADDRESS  # 发件邮箱
@@ -90,4 +90,3 @@ def gen_captcha_image():
     image.save('../Web/static/captcha.jpg', 'jpeg')
 
     return captcha_text
-
