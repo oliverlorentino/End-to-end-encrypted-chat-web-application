@@ -5,7 +5,7 @@ from flask_cors import CORS
 from Web.database import get_mysql_connection
 from Web.util import send_verification_email, can_send
 
-app = Flask(__name__, static_folder='E:\\learnProject\\End-to-end-encrypted-chat-web-application\\Web\\static')
+app = Flask(__name__, static_folder='./static')
 CORS(app)
 
 global_dict = {}
