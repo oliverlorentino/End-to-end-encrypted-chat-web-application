@@ -1,12 +1,16 @@
-import smtplib
 import random
+import smtplib
 import ssl
 import time
-
 from email.message import EmailMessage
+
+from PIL import Image, ImageDraw, ImageFont
+from flask import Flask
 
 flag = True
 last_time = time.time()
+
+app = Flask(__name__)
 
 
 def can_send():
@@ -53,3 +57,37 @@ def send_verification_email(receive_mail):
         smtp.send_message(msg)
 
     return verification_code
+
+
+# 随机生成4位验证码
+def random_captcha_text(char_set, captcha_size=4):
+    captcha_text = ''
+    for i in range(captcha_size):
+        c = random.choice(char_set)
+        captcha_text += c
+    return captcha_text
+
+
+# 下载验证码图片
+def gen_captcha_image():
+    image = Image.new('RGB', (100, 50), (255, 255, 255))
+    font = ImageFont.truetype('arial.ttf', 40)
+    draw = ImageDraw.Draw(image)
+
+    # 绘制字符串
+    captcha_text = random_captcha_text('0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ', 4)
+    draw.text((10, 10), captcha_text, font=font, fill=(0, 0, 255))
+
+    # 添加干扰线
+    for i in range(5):
+        x1 = random.randint(0, 100)
+        y1 = random.randint(0, 100)
+        x2 = random.randint(0, 100)
+        y2 = random.randint(0, 100)
+        draw.line((x1, y1, x2, y2), fill=(0, 0, 255))
+
+    # 保存生成的验证码图片
+    image.save('../Web/static/captcha.jpg', 'jpeg')
+
+    return captcha_text
+

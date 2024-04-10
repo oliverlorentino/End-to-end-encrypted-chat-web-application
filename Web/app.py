@@ -3,12 +3,13 @@ from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_cors import CORS
 from Web.database import get_mysql_connection
-from Web.util import send_verification_email, can_send
+from Web.util import send_verification_email, can_send, gen_captcha_image
 
 app = Flask(__name__, static_folder='./static')
 CORS(app)
 
 global_dict = {}
+picture_code = ''
 
 
 @app.route('/register', methods=['POST'])
@@ -72,11 +73,13 @@ def email():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global picture_code
     if request.method == 'POST':
-
         username = request.form['username']
         password = request.form['password']
-
+        captcha = request.form['captcha']
+        if captcha != picture_code:
+            return render_template('login.html')
         connection = get_mysql_connection()
         cursor = connection.cursor()
 
@@ -94,6 +97,7 @@ def login():
         cursor.close()
         connection.close()
         return render_template('email.html')
+    picture_code = gen_captcha_image()
     return render_template('login.html')
 
 
