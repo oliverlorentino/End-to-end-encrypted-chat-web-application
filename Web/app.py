@@ -1,27 +1,27 @@
 from datetime import datetime
 
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, session
 from flask_cors import CORS
+
 from Web.database import get_mysql_connection
 from Web.util import send_verification_email, can_send, gen_captcha_image, sha256_encrypt
 
 app = Flask(__name__, static_folder='./static')
 CORS(app)
-
-global_dict = {}
+email_code = {}
 picture_code = ''
 
 
 @app.route('/register', methods=['POST'])
 def register():
-    global global_dict
+    global email_code
     email = request.form['registerEmail']
-    if email in global_dict:
+    if email in email_code:
         return render_template('login.html')
     flag = can_send()
     if flag:
         code = send_verification_email(email)
-        global_dict[email] = code
+        email_code[email] = code
         return render_template('registerCode.html')
     return render_template('login.html')
 
@@ -30,8 +30,9 @@ def register():
 def register_code():
     email = request.form['email']
     code = request.form['code']
-    global global_dict
-    if global_dict[email] == code:
+    global email_code
+    if email_code[email] == code:
+        session[email] = email
         return render_template('userInfo.html')
     return render_template('login.html')
 
@@ -54,20 +55,23 @@ def user_info():
 def code():
     email = request.form['email']
     code = request.form['code']
-    global global_dict
-    if global_dict[email] == code:
+    global email_code
+    if email_code[email] == code:
         print("test-----------")
+        session[email] = email
         return render_template('chat.html')
     return render_template('login.html')
 
 
 @app.route('/email', methods=['POST'])
 def email():
+    email = request.form['email']
+    if session[email] == email:
+        return render_template('chat.html')
     flag = can_send()
     if flag:
-        email = request.form['email']
         code = send_verification_email(email)
-        global_dict[email] = code
+        email_code[email] = code
         return render_template('code.html')
     return render_template('email.html')
 
