@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forget Password</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+    <div class="content">
+        <h2>Forget Password</h2>
+        {% for message in get_flashed_messages() %}
+    <div style="color: red; font-size: 20px; background-color: yellow; padding: 10px; border: 1px solid red;">
+        {{ message }}
+    </div>
+{% endfor %}
+        <form action="/forget" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="recoverKey">Recovery Key:</label>
+                <input type="text" id="recoverKey" name="recoverKey" required>
+            </div>
+            <button type="submit" class="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+  <title></title>
+</head>
+
+<body>
+  {% for message in get_flashed_messages() %}
+    <div style="color: red; font-size: 20px; background-color: yellow; padding: 10px; border: 1px solid red;">
+        {{ message }}
+    </div>
+{% endfor %}
+  <div class="content">
+    <div class="form sign-in">
+      <h2>validation email</h2>
+      <form action="/email" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <label>
+        <span>email</span>
+        <input type="email" id="email" name="email" autocomplete="email">
+      </label>
+      <button type="submit" class="submit" id="login-button">send validation code</button>
+        </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../static/js/script.js"></script>
+</body>
+
+</html>
