@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./webapp/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./webapp/nginx/TLServer.crt:/etc/nginx/ssl/TLServer.crt:ro
+      - ./webapp/nginx/TLServer.key:/etc/nginx/ssl/TLServer.key:ro
+    depends_on:
+      - web
+
+  web:
+    build: ./webapp
+    expose:
+      - "61117"
+    command: waitress-serve --listen=0.0.0.0:61117 proxy:app
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      - MYSQL_DATABASE=chatdb
+      - MYSQL_USER=chatuser
+      - MYSQL_PASSWORD=chatpassword
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    restart: always
+    volumes:
+      - ./db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
